@@ -1,6 +1,6 @@
 extends Object
 
-const InstanceTracker = preload("InstanceTracker.gd")
+const InstanceTracker = preload("res://src/Plugins/GodotRx/InstanceTracker.gd")
 const TRK_META = "__inst_trk__"
 
 signal instance_tracker_freed(id)
@@ -13,7 +13,7 @@ func inject_instance_tracker(obj: Object) -> int:
 	else:
 		tracker = InstanceTracker.new(self)
 		obj.set_meta(TRK_META, tracker)
-	
+
 	return tracker.id
 
 func on_instance_tracker_predelete(id):

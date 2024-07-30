@@ -32,7 +32,7 @@ const TYPE_MAP = {
   14: "Color",
   15: "NodePath",
   16: "RID",
-  17: "Godot.Object",
+  17: "GodotObject",
   18: "Godot.Collections.Dictionary",
   19: "Godot.Collections.Array",
   20: "byte[]",
@@ -84,7 +84,7 @@ function funcDecl(className, signalName, args, static) {
     callGenerics = args
       .map(arg => stringifyType(arg))
       .join(', ')
-    
+
     generics = `(${generics})`
     callGenerics = `<${callGenerics}>`
   }
@@ -93,7 +93,7 @@ function funcDecl(className, signalName, args, static) {
   let methodName = `On${trimStart(snakeToPascal(signalName), 'On')}`
   let params = static ? "" : `this Godot.${className} ${OBJ_VAR_NAME}`;
   let instance = static ? `${className}.Singleton` : OBJ_VAR_NAME;
-  
+
   return `
 public static ${returnType} ${methodName}(${params})
   => ${instance}.ObserveSignal${callGenerics}("${signalName}");
@@ -111,15 +111,15 @@ function generateClassReg() {
     let classRegKey = static
       ? `${genClassName}${STATIC_EXT_POSTFIX}`
       : SIGNAL_EXT_CLS_NAME
-    
+
     let signals = signalData[className]
 
     for (let signalName in signals) {
       let args = signals[signalName]
       maxArgs = Math.max(maxArgs, args.length)
-  
+
       let decl = funcDecl(genClassName, signalName, args, static)
-      
+
       if (!(classRegKey in classReg)) {
         classReg[classRegKey] = []
       }

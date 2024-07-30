@@ -4,11 +4,23 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-using Object = Godot.Object;
-
 namespace GodotRx.Internal
 {
-  internal abstract class BaseEventTracker<T> : Object
+
+  /// <summary>
+  /// Use this to fire signals from gdscript into C#.
+  /// </summary>
+  internal interface ISignalAdapter {
+    void Fire();
+    void Fire(object o1);
+    void Fire(object o1, object o2);
+    void Fire(object o1, object o2, object o3);
+    void Fire(object o1, object o2, object o3, object o4);
+    void Fire(object o1, object o2, object o3, object o4, object o5);
+    void Fire(object o1, object o2, object o3, object o4, object o5, object o6);
+  }
+
+  internal abstract partial class BaseEventTracker<T> : GodotObject, ISignalAdapter
   {
     public readonly string TargetMethod = nameof(OnNext);
 
@@ -45,43 +57,57 @@ namespace GodotRx.Internal
       _subject.CompleteAndDispose();
       base.Dispose(disposing);
     }
+
+    public void Fire() => OnNext();
+
+    public void Fire(object o1) => OnNext(o1);
+
+    public void Fire(object o1, object o2) => OnNext(o1, o2);
+
+    public void Fire(object o1, object o2, object o3) => OnNext(o1, o2, o3);
+
+    public void Fire(object o1, object o2, object o3, object o4) => OnNext(o1, o2, o3, o4);
+
+    public void Fire(object o1, object o2, object o3, object o4, object o5) => OnNext(o1, o2, o3, o4, o5);
+
+    public void Fire(object o1, object o2, object o3, object o4, object o5, object o6) => OnNext(o1, o2, o3, o4, o5, o6);
   }
 
-  internal class EventTracker : BaseEventTracker<Unit>
+  internal partial class EventTracker : BaseEventTracker<Unit>
   {
     protected override Unit Cast(object o) => new Unit();
   }
 
-  internal class EventTracker<T> : BaseEventTracker<T>
+  internal partial class EventTracker<T> : BaseEventTracker<T>
   {
     protected override T Cast(object o) => (T) o;
   }
 
-  internal class EventTracker<T1, T2> : BaseEventTracker<(T1, T2)>
+  internal partial class EventTracker<T1, T2> : BaseEventTracker<(T1, T2)>
   {
-    protected override (T1, T2) Cast(object o) 
+    protected override (T1, T2) Cast(object o)
       => ((T1, T2)) ((object, object)) o;
   }
 
-  internal class EventTracker<T1, T2, T3> : BaseEventTracker<(T1, T2, T3)>
+  internal partial class EventTracker<T1, T2, T3> : BaseEventTracker<(T1, T2, T3)>
   {
     protected override (T1, T2, T3) Cast(object o)
       => ((T1, T2, T3)) ((object, object, object)) o;
   }
 
-  internal class EventTracker<T1, T2, T3, T4> : BaseEventTracker<(T1, T2, T3, T4)>
+  internal partial class EventTracker<T1, T2, T3, T4> : BaseEventTracker<(T1, T2, T3, T4)>
   {
     protected override (T1, T2, T3, T4) Cast(object o)
       => ((T1, T2, T3, T4)) ((object, object, object, object)) o;
   }
 
-  internal class EventTracker<T1, T2, T3, T4, T5> : BaseEventTracker<(T1, T2, T3, T4, T5)>
+  internal partial class EventTracker<T1, T2, T3, T4, T5> : BaseEventTracker<(T1, T2, T3, T4, T5)>
   {
     protected override (T1, T2, T3, T4, T5) Cast(object o)
       => ((T1, T2, T3, T4, T5)) ((object, object, object, object, object)) o;
   }
 
-  internal class EventTracker<T1, T2, T3, T4, T5, T6> : BaseEventTracker<(T1, T2, T3, T4, T5, T6)>
+  internal partial class EventTracker<T1, T2, T3, T4, T5, T6> : BaseEventTracker<(T1, T2, T3, T4, T5, T6)>
   {
     protected override (T1, T2, T3, T4, T5, T6) Cast(object o)
       => ((T1, T2, T3, T4, T5, T6)) ((object, object, object, object, object, object)) o;

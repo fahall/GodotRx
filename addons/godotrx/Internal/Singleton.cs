@@ -1,19 +1,17 @@
 using Godot;
 using System;
 
-using Object = Godot.Object;
-
 namespace GodotRx.Internal
 {
-  internal sealed class Singleton : Node
+  internal sealed partial class Singleton : Node
   {
     private static readonly GDScript _gdInstanceScript = (GDScript) GD.Load("res://addons/godotrx/GodotRx.gd");
-    private static readonly Object _gdInstance = (Object) _gdInstanceScript.New();
+    private static readonly GodotObject _gdInstance = (GodotObject) _gdInstanceScript.New();
 
-    public static int RegisterInstanceTracker(InstanceTracker tracker, Object target)
+    public static int RegisterInstanceTracker(InstanceTracker tracker, GodotObject target)
     {
       var id = (int) _gdInstance.Call("inject_instance_tracker", target);
-      _gdInstance.Connect("instance_tracker_freed", tracker, InstanceTracker.OnFreedMethod);
+      _gdInstance.Connect("instance_tracker_freed", Callable.From(() => tracker.OnTrackerFreed(id)));
       return id;
     }
 
@@ -29,7 +27,7 @@ namespace GodotRx.Internal
       }
 
       Instance = this;
-      PauseMode = PauseModeEnum.Process;
+      ProcessMode = ProcessModeEnum.Always;
     }
   }
 }

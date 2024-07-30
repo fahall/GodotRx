@@ -3,25 +3,19 @@ using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace GodotRx.Internal
-{
-  internal class NodeTracker : Node
-  {
+namespace GodotRx.Internal {
+  internal partial class NodeTracker : Node {
     public static readonly string DefaultName = "__NodeTracker__";
-
-    private Subject<float>? _onProcess;
-    private Subject<float>? _onPhysicsProcess;
     private Subject<InputEvent>? _onInput;
+    private Subject<double>? _onPhysicsProcess;
+    private Subject<double>? _onProcess;
     private Subject<InputEvent>? _onUnhandledInput;
-    private Subject<InputEventKey>? _onUnhandledKeyInput;
+    private Subject<InputEvent>? _onUnhandledKeyInput;
 
-    public IObservable<float> OnProcess
-    {
-      get
-      {
-        if (_onProcess == null)
-        {
-          _onProcess = new Subject<float>();
+    public IObservable<double> OnProcess {
+      get {
+        if (_onProcess == null) {
+          _onProcess = new Subject<double>();
           SetProcess(true);
         }
 
@@ -29,13 +23,10 @@ namespace GodotRx.Internal
       }
     }
 
-    public IObservable<float> OnPhysicsProcess
-    {
-      get
-      {
-        if (_onPhysicsProcess == null)
-        {
-          _onPhysicsProcess = new Subject<float>();
+    public IObservable<double> OnPhysicsProcess {
+      get {
+        if (_onPhysicsProcess == null) {
+          _onPhysicsProcess = new Subject<double>();
           SetPhysicsProcess(true);
         }
 
@@ -43,12 +34,9 @@ namespace GodotRx.Internal
       }
     }
 
-    public IObservable<InputEvent> OnInput
-    {
-      get
-      {
-        if (_onInput == null)
-        {
+    public IObservable<InputEvent> OnInput {
+      get {
+        if (_onInput == null) {
           _onInput = new Subject<InputEvent>();
           SetProcessInput(true);
         }
@@ -57,12 +45,9 @@ namespace GodotRx.Internal
       }
     }
 
-    public IObservable<InputEvent> OnUnhandledInput
-    {
-      get
-      {
-        if (_onUnhandledInput == null)
-        {
+    public IObservable<InputEvent> OnUnhandledInput {
+      get {
+        if (_onUnhandledInput == null) {
           _onUnhandledInput = new Subject<InputEvent>();
           SetProcessUnhandledInput(true);
         }
@@ -71,13 +56,10 @@ namespace GodotRx.Internal
       }
     }
 
-    public IObservable<InputEventKey> OnUnhandledKeyInput
-    {
-      get
-      {
-        if (_onUnhandledKeyInput == null)
-        {
-          _onUnhandledKeyInput = new Subject<InputEventKey>();
+    public IObservable<InputEvent> OnUnhandledKeyInput {
+      get {
+        if (_onUnhandledKeyInput == null) {
+          _onUnhandledKeyInput = new Subject<InputEvent>();
           SetProcessUnhandledKeyInput(true);
         }
 
@@ -85,8 +67,7 @@ namespace GodotRx.Internal
       }
     }
 
-    public override void _Ready()
-    {
+    public override void _Ready() {
       SetProcess(false);
       SetPhysicsProcess(false);
       SetProcessInput(false);
@@ -94,33 +75,13 @@ namespace GodotRx.Internal
       SetProcessUnhandledKeyInput(false);
     }
 
-    public override void _Process(float delta)
-    {
-      _onProcess?.OnNext(delta);
-    }
+    public override void _Process(double delta) => _onProcess?.OnNext(delta);
+    public override void _PhysicsProcess(double delta) => _onPhysicsProcess?.OnNext(delta);
+    public override void _Input(InputEvent ev) => _onInput?.OnNext(ev);
+    public override void _UnhandledInput(InputEvent ev) => _onUnhandledInput?.OnNext(ev);
+    public override void _UnhandledKeyInput(InputEvent ev) => _onUnhandledKeyInput?.OnNext(ev);
 
-    public override void _PhysicsProcess(float delta)
-    {
-      _onPhysicsProcess?.OnNext(delta);
-    }
-
-    public override void _Input(InputEvent ev)
-    {
-      _onInput?.OnNext(ev);
-    }
-
-    public override void _UnhandledInput(InputEvent ev)
-    {
-      _onUnhandledInput?.OnNext(ev);
-    }
-
-    public override void _UnhandledKeyInput(InputEventKey ev)
-    {
-      _onUnhandledKeyInput?.OnNext(ev);
-    }
-
-    protected override void Dispose(bool disposing)
-    {
+    protected override void Dispose(bool disposing) {
       _onProcess?.CompleteAndDispose();
       _onPhysicsProcess?.CompleteAndDispose();
       _onInput?.CompleteAndDispose();

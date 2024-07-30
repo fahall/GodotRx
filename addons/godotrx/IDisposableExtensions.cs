@@ -3,15 +3,13 @@ using GodotRx.Internal;
 using System;
 using System.Collections.Generic;
 
-using Object = Godot.Object;
-
 namespace GodotRx
 {
   public static class IDisposableExtensions
   {
     private static readonly Dictionary<ulong, HashSet<IDisposable>> objectDisposables = new Dictionary<ulong, HashSet<IDisposable>>();
 
-    public static void DisposeWith(this IDisposable disposable, Object obj)
+    public static void DisposeWith(this IDisposable disposable, GodotObject obj)
     {
       var instId = obj.GetInstanceId();
 
