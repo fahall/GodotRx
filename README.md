@@ -1,9 +1,11 @@
-# GodotRx - Reactive Extensions for Godot C#
+# GodotRx 4 - Reactive Extensions for Godot C# 4.2.2
 GodotRx is a set of reactive extensions for Godot C#, currently with signals, lifecycle events, input events, and frame events as observables, along with utility awaitable tasks, time scale-based schedulers, and reactive properties.
 
 ## Status
 **Experimental.** Not yet battle-tested. API changes are likely.
 We'll incorporate this to a production project, so it will probably improve over time.
+
+> ⚠️ I updated the code for 4.2.2 compatibility, but only touched what's in `addons`. I did not update the original csproj, sln, and tests from semickolon. Therefore, I do not expect them to work. The README may also contain out of date syntax. 
 
 ## Motivation
 Right now, connecting to Godot signals in C# is very similar to how you'd do it in GDScript. Though you can use idiomatic C# events for your own code, interfacing with Godot's built-in nodes, which is inevitable, would require you to write something like:
